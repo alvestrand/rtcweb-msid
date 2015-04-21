@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-ietf-mmusic-msid-09a" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-mmusic-msid-09b" ipr="trust200902">
   <front>
     <title abbrev="MSID in SDP">WebRTC MediaStream Identification in the
     Session Description Protocol</title>
@@ -67,7 +67,8 @@
         target="RFC4566"/> mechanism that can associate application layer
         identifiers with the binding between media streams, attaching
         identifiers to the media streams and attaching identifiers to the
-        groupings they form.</t>
+        groupings they form. It is designed for use with WebRTC<xref
+        target="I-D.ietf-rtcweb-overview"/> .</t>
 
         <t><xref target="sect-why"/> gives the background on why a new
         mechanism is needed.</t>
@@ -75,14 +76,10 @@
         <t><xref target="sect-definition"/> gives the definition of the new
         mechanism.</t>
 
-        <t><xref target="sect-semantic"/> gives the definition of the
-        msid-semantic field, which gives the possibility of using MSIDs with
-        different semantics in the same SDP message.</t>
-
-        <t><xref target="sect-media-stream"/> gives the application of the new
-        mechanism for providing necessary semantic information for the
-        association of MediaStreamTracks to MediaStreams in the WebRTC API
-        <xref target="W3C.WD-webrtc-20120209"/>.</t>
+        <t><xref target="sect-media-stream"/> gives the necessary semantic
+        information and procedures for using the msid attribute to signal the
+        association of MediaStreamTracks to MediaStreams in support of the
+        WebRTC API <xref target="W3C.WD-webrtc-20150210"/>.</t>
       </section>
 
       <section anchor="sect-why" title="Why A New Mechanism Is Needed">
@@ -100,24 +97,16 @@
         target="I-D.ietf-mmusic-sdp-bundle-negotiation"/>; if BUNDLE is not
         used, each media source is carried in its own RTP session.</t>
 
-        <t>There exist cases where an application using RTP and SDP needs to
-        signal some relationship between RTP media streams that may be carried
-        in either the same RTP session or different RTP sessions. For
-        instance, there may be a need to signal a relationship between a video
-        track and an audio track, and where the generator of the SDP does not
-        yet know if they will be carried in the same RTP session or different
-        RTP sessions.</t>
-
         <t>The SDP grouping framework <xref target="RFC5888"/> can be used to
-        group m-lines. However, there is sometimes the need for an application
-        to specify some application-level information about the association
-        between the m-line and the group. This is not possible using the SDP
-        grouping framework.</t>
+        group m-lines. However, for the use case of WebRTC, there is the need
+        for an application to specify some application-level information about
+        the association between the m-line and the group. This is not possible
+        using the SDP grouping framework.</t>
       </section>
 
-      <section title="Application to the WEBRTC MediaStream">
+      <section title="The WEBRTC MediaStream">
         <t>The W3C WebRTC API specification <xref
-        target="W3C.WD-webrtc-20120209"/> specifies that communication between
+        target="W3C.WD-webrtc-20150210"/> specifies that communication between
         WebRTC entities is done via MediaStreams, which contain
         MediaStreamTracks. A MediaStreamTrack is generally carried using a
         single SSRC in an RTP session (forming an RTP media stream. The
@@ -199,110 +188,10 @@
       of such grouping and ungrouping are application dependent.</t>
     </section>
 
-    <section anchor="sect-semantic" title="The Msid-Semantic Attribute">
-      <t>A session-level attribute is defined for signaling the semantics
-      associated with an msid grouping. This allows msid groupings with
-      different semantics to coexist.</t>
-
-      <t>This OPTIONAL attribute gives the group identifier and its group
-      semantic; it carries the same meaning as the ssrc-group-attr of RFC 5576
-      section 4.2, but uses the identifier of the group rather than a list of
-      SSRC values.</t>
-
-      <t>This attribute MUST be present if "a=msid" is used.</t>
-
-      <t>An empty list of identifiers is an indication that the sender
-      supports the indicated semantic, but has no msid groupings of the given
-      type in the present SDP.</t>
-
-      <t>An identifier of "*" is an indication that all "a=msid" lines in the
-      SDP have this specific semantic. If "*" is not used, each msid-id in the
-      SDP MUST appear in one and only one "msid-semantic" line.</t>
-
-      <t>The name of the attribute is "msid-semantic".</t>
-
-      <t>The value of the attribute is given by the following ABNF:</t>
-
-      <figure>
-        <artwork><![CDATA[
-  msid-semantic-value = msid-semantic msid-list
-  msid-semantic = token ; see RFC 4566
-  msid-list = *(SP msid-id) / SP "*"
-   ]]></artwork>
-      </figure>
-
-      <t>The semantic field holds values from the IANA registriy "Semantics
-      for the msid-semantic SDP attribute" (which is defined in <xref
-      target="IANA"/>).</t>
-
-      <t>An example msid-semantic might look like this, if a semantic LS was
-      registered by IANA for the same purpose as the existing LS grouping
-      semantic:</t>
-
-      <figure>
-        <artwork><![CDATA[  
-  a=msid-semantic:LS xyzzy forolow
-
-]]></artwork>
-      </figure>
-
-      <t>This means that the SDP description has two lip sync groups, with the
-      group identifiers xyzzy and forolow, respectively.</t>
-
-      <t>The msid-semantic attribute can occur more than once, but MUST NOT
-      occur more than once with the same msid-semantic value.</t>
-    </section>
-
-    <section title="Generic SDP Offer/Answer Procedures">
-      <t>In accordance with guidance on definitions of SDP extensions, this
-      section gives the generic procedures that have to be followed by all
-      implementations of Msid, independent of which semantics they
-      support.</t>
-
-      <t>Note that the use of msid is not negotiated; each side declares what
-      semantics it uses. This means that an offerer has to be willing and able
-      to take appropriate action if the other side does not wish to use the
-      semantic, and an answerer adding new semantics to an answer has to be
-      willing and able to deal with the offerer not wishing to use that
-      semantic.</t>
-
-      <section title="Generating the Initial Offer">
-        <t>An entity wishing to use an MSID semantic MUST add one or more
-        "msid-semantic" attributes to its session level attributes, indicating
-        the MSID semantic it wishes to have available..</t>
-      </section>
-
-      <section title="Answerer Processing of the Offer">
-        <t>If an "msid-semantic" attribute is present in the offer, and the
-        answerer wishes to use the indicated semantic, the answerer MUST
-        follow the procedures described for that semantic.</t>
-      </section>
-
-      <section title="Generating the Answer">
-        <t>An entity wishing to use an MSID semantic MUST add one or more
-        "msid-semantic" attributes to its session level attributes, indicating
-        the MSID semantic it wishes to have available. If the answerer does
-        not wish to use one or more of the semantics indicated in the offer,
-        the answerer MUST NOT include "msid-semantic" lines indicating these
-        semantics in the answer.</t>
-      </section>
-
-      <section title="Offerer Processing of the Answer">
-        <t>If an "msid-semantic" attribute is present in the answer, and the
-        offerer wishes to use the indicated semantic, the offerer MUST follow
-        the procedures described for that semantic. The offerer MUST follow
-        the procedures for all semantics that were indicated in its offer and
-        were also present in the answer.</t>
-      </section>
-    </section>
-
-    <section anchor="sect-media-stream"
-             title="Applying Msid to WebRTC MediaStreams">
-      <t>This section creates a new semantic as defined in <xref
-      target="sect-semantic"/> for use with the framework defined in <xref
-      target="sect-definition"/>, to be used for associating m-lines
-      representing MediaStreamTracks within MediaStreams as defined in <xref
-      target="W3C.WD-webrtc-20120209"/>.</t>
+    <section anchor="sect-media-stream" title="Procedures">
+      <t>This section describes how to use the msid-semantic attribute for
+      associating m-lines representing MediaStreamTracks within MediaStreams
+      as defined in <xref target="W3C.WD-webrtc-20150210"/>.</t>
 
       <t>In the Javascript API, each MediaStream and MediaStreamTrack has an
       "id" attribute, which is a DOMString.</t>
@@ -360,49 +249,53 @@
       target="I-D.ietf-rtcweb-jsep"/>.</t>
 
       <section anchor="s-nonsignal" title="Handling of non-signalled tracks">
-        <t>Entities that do not use the WMS semantic will not send
-        "msid-semantic:WMS". This means that there will be some incoming RTP
-        packets that the recipient has no predefined MediaStream id value
-        for.</t>
+        <t>Entities that do not use msid will not send msid. This means that
+        there will be some incoming RTP packets that the recipient has no
+        predefined MediaStream id value for.</t>
 
         <t>Note that this handling is triggered by incoming RTP packets, not
         by SDP negotiation.</t>
 
-        <t>Handling will depend on whether or not the msid-semantic:WMS
-        attribute is present. There are two cases:</t>
+        <t>When MSID is used, the only time this can happen is when, at a time
+        subsequent to the initial negotiation, a negotiation is performed
+        where the answerer adds a MediaStreamTrack to an already established
+        connection and starts sending data before the answer is received by
+        the offerer. For initial negotiation, packets won't flow until the ICE
+        candidates and fingerprints have been exchanged, so this is not an
+        issue.</t>
+
+        <t>The recipient of those packets will perform the following
+        steps:</t>
 
         <t><list style="symbols">
-            <t>No "msid-semantic:WMS" attribute is present. The SDP session is
-            assumed to be a backwards-compatible session. All incoming media,
-            on all m-lines that are part of the SDP session, are assumed to
-            belong to tracks of the same media stream (the "default media
-            stream"). The identifier of this media stream and of the media
-            stream track is a randomly generated string; the WebIDL "label"
-            attribute of this media stream will be set to "Non-WMS
-            stream".</t>
+            <t>When RTP packets are initially received, it will create an
+            appropriate MediaStreamTrack based on the type of the media
+            (carried in PayloadType), and use the mid RTP attribute (if
+            present) to associate the RTP packets with a specific media
+            section. If the connection is not in the RTCSignalingState
+            "stable", it will wait at this point.</t>
 
-            <t>An "msid-semantic:WMS" attribute is present. In this case, the
-            sender implements the WMS semantic, and the packets are either
-            caused by a bug or by timing skew between the arrival of the media
-            packets and the SDP description. These packets MAY be discarded,
-            or they MAY be buffered for a while in order to allow immediate
-            startup of the media stream when the SDP description is updated.
-            The arrival of media packets MUST NOT cause a new MediaStreamTrack
-            to be signaled.</t>
+            <t>When the connection is in the RTCSignalingState "stable", it
+            will look at the relevant media section to find the msid
+            attribute.</t>
+
+            <t>If there is an msid attribute, it will use that attribute to
+            populate the "id" field of the MediaStreamTrack and associated
+            MediaStreams, as described above.</t>
+
+            <t>If there is no msid attribute, the identifier of the
+            MediaStreamTrack will be set to a randomly generated string, and
+            it will be signalled as being part of a MediaStream with the
+            WebIDL "label" attribute set to "Non-WebRTC stream".</t>
+
+            <t>After deciding on the "id" field to be applied to the
+            MediaStreamTrack, the track will be signalled to the user.</t>
           </list></t>
 
-        <t>If an entity wishing to use the WMS semantic sends a description,
-        it MUST include the msid-semantic:WMS attribute, even if no media
-        streams are sent. This allows us to distinguish between the case of no
-        media streams at the moment and the case of SDP generated by an entity
-        that wishes to use the backwards-compatible mechanism.</t>
-
-        <t>It follows from the above that the media receiver implmementing the
-        WMS semantic must have the SDP of the other party before it can decide
-        correctly which of the two cases described above applies. RTP media
-        packets that arrive before the remote party's SDP MUST be buffered or
-        discarded, and MUST NOT cause a new MediaStreamTrack to be
-        signalled.</t>
+        <t>The process above may involve a considerable amount of buffering
+        before the stable state is entered, If the implementation wishes to
+        limit this buffering, it MUST send a "mediadiscarded" event to the
+        user, as described in [????].</t>
 
         <t>It follows from the above that media stream tracks in the "default"
         media stream cannot be closed by removing the msid attribute; the
@@ -417,20 +310,17 @@
         MediaStreams and MediaStreamTracks; they do not include event
         signalling inside the application, which is described in JSEP.</t>
 
-        <t>They are specifically applicable to the WMS semantic; other
-        semantics will have their own consideration.</t>
-
         <section title="Generating the initial offer">
           <t>For each media description in the offer, if there is an
-          associated MediaStreamTrack, the offerer adds one "a=msid" attribute
-          to the section for each MediaStream with which the MediaStreamTrack
-          is associated. The "identifier" field of the attribute is set to the
-          WebIDL "id" attribute of the MediaStream, and the "appdata" field is
-          set to the WebIDL "id" attribute of the MediaStreamTrack.</t>
+          associated outgoing MediaStreamTrack, the offerer adds one "a=msid"
+          attribute to the section for each MediaStream with which the
+          MediaStreamTrack is associated. The "identifier" field of the
+          attribute is set to the WebIDL "id" attribute of the MediaStream,
+          and the "appdata" field is set to the WebIDL "id" attribute of the
+          MediaStreamTrack.</t>
 
-          <t>The offerer adds an "msid-semantic:WMS" field to the
-          session-level headers, and appends to it either a list of all the
-          identifiers used in the offer, or the single character "*".</t>
+          <t>[NOTE: Does RTPSender have a role to play here? See debate on
+          ReplaceTrack]</t>
         </section>
 
         <section title="Answerer processing of the Offer">
@@ -452,16 +342,14 @@
               already exists. If not, create it.</t>
 
               <t>Add the MediaStreamTrack to the MediaStream</t>
+
+              <t>[Extend these procedures for RTPReceiver]</t>
             </list></t>
         </section>
 
         <section title="Generating the answer">
-          <t>The answer is generated in exactly the same manner as the
-          offer.</t>
-
-          <t>This includes adding a "msid-semantic:WMS" attribute in the
-          session-level headers, independent of whether or not such a header
-          was present in the offer.</t>
+          <t>The answer is generated in exactly the same manner as the offer.
+          "a=msid" values in the offer do not influence the answer.</t>
         </section>
 
         <section title="Offerer processing of the answer">
@@ -481,7 +369,7 @@
               the present SDP whose "appdata" field is the same as the WebIDL
               "id" attribute of the track.</t>
 
-              <t>If no such attribute is found, close the MediaStreamTrack.
+              <t>If no such attribute is found, stop the MediaStreamTrack.
               This will set its state to "ended".</t>
             </list></t>
         </section>
@@ -500,7 +388,6 @@
         <figure>
           <artwork><![CDATA[
 
-a=msid-semantic:WMS *
 # First MediaStream - id is 4701...
 m=audio 56500 UDP/TLS/RTP/SAVPF 96 0 8 97 98
 a=msid:47017fee-b6c1-4162-929c-a25110252400
@@ -547,60 +434,12 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
             characters, and is therefore not subject to the charset
             attribute.</t>
 
-            <t>Purpose: The attribute gives an association over a set of
-            m-lines. For example, it can be used to signal the relationship
+            <t>Purpose: The attribute can be used to signal the relationship
             between a WebRTC MediaStream and a set of m-lines.</t>
 
             <t>Appropriate values: The details of appropriate values are given
             in RFC XXXX.</t>
           </list></t>
-
-        <t>This document requests IANA to register the "msid-semantic"
-        attribute in the "att-field (session level) registry within the SDP
-        parameters registry, according to the same procedures.</t>
-
-        <t>The required information is:</t>
-
-        <t><list style="symbols">
-            <t>Contact name, email: IETF, contacted via mmusic@ietf.org, or a
-            successor address designated by IESG</t>
-
-            <t>Attribute name: msid-semantic</t>
-
-            <t>Long-form attribute name: Msid group semantic identifier</t>
-
-            <t>Subject to charset: The attribute value contains only ASCII
-            characters, and is therefore not subject to the charset
-            attribute.</t>
-
-            <t>Purpose: The attribute gives the semantics of an association
-            over a set of m-lines.</t>
-
-            <t>Appropriate values: The details are given in RFC XXXX.</t>
-          </list></t>
-      </section>
-
-      <section title="New registry creation">
-        <t>This document requests IANA to create a new registry called
-        "Semantics for the msid-semantic SDP attribute" in the "Session
-        Description Protocol (SDP) Parameters" group. This registry operates
-        on the Expert Review policy <xref target="RFC5226"/>. Usage of the
-        registry is expected to be low, so the expert should feel free to
-        consult widely if a new request ever comes in.</t>
-
-        <t>This document requests IANA to register the "WMS" semantic within
-        this new registry.</t>
-
-        <t>The required information is:</t>
-
-        <t><list style="symbols">
-            <t>Description: WebRTC Media Stream, as given in RFC XXXX.</t>
-
-            <t>Token: WMS</t>
-
-            <t>Standards track reference: RFC XXXX</t>
-          </list>IANA is requested to replace "RFC XXXX" with the RFC number
-        of this document upon publication.</t>
       </section>
     </section>
 
@@ -637,11 +476,9 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
       <?rfc include='reference.RFC.4566'?>
 
-      <?rfc include='reference.RFC.5226'?>
-
       <?rfc include='reference.RFC.5234'?>
 
-      <?rfc include='reference.W3C.WD-webrtc-20120209'?>
+      <?rfc include='reference.W3C.WD-webrtc-20150210'?>
 
       <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
     </references>
@@ -652,6 +489,8 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       <?rfc include='reference.RFC.5888'?>
 
       <?rfc include='reference.I-D.ietf-mmusic-sdp-bundle-negotiation'?>
+
+      <?rfc include='reference.I-D.ietf-rtcweb-overview'?>
     </references>
 
     <section title="Design considerations, rejected alternatives">
@@ -667,6 +506,11 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       of RTCP SR (sender report) packets. This doesn't offer the ability to
       know that you have seen all the tracks currently configured for a media
       stream.</t>
+
+      <t>A suggestion that survived for a number of drafts was to define
+      "msid" as a generic mechanism, where the particular semantics of this
+      usage of the mechanism would be defined by an "a=wms-semantic"
+      attribute. This was removed in April 2015.</t>
     </section>
 
     <section title="Change log">
@@ -816,8 +660,11 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
         <t>Changed the "non-signalled track handling" to create a single
         stream with multiple tracks again, according to discussions at TPAC in
         November 2014</t>
+      </section>
 
-        <t/>
+      <section title="Changes from -08 to -09">
+        <t>Removed "wms-semantic" and all mention of multiple semantics for
+        msid, as agreed at the Dallas IETF, March 2015.</t>
       </section>
     </section>
   </back>
