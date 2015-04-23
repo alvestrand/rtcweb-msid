@@ -137,9 +137,9 @@
     <section anchor="sect-definition" title="The Msid Mechanism">
       <t>This document defines a new SDP <xref target="RFC4566"/> media-level
       "msid" attribute. This new attribute allows endpoints to associate RTP
-      media streams that are carried in the same or different media
-      descriptions. The attribute also allows application-specific information
-      to the association.</t>
+      media streams that are described in different media descriptions. The
+      attribute also allows application-specific information to the
+      association.</t>
 
       <t>The value of the "msid" attribute consists of an identifier and
       optional application-specific data.</t>
@@ -196,9 +196,6 @@
       <t>In the Javascript API, each MediaStream and MediaStreamTrack has an
       "id" attribute, which is a DOMString.</t>
 
-      <t>The semantic token for this semantic is "WMS" (short for WebRTC Media
-      Stream).</t>
-
       <t>The value of the "msid-id" field in the msid consists of the "id"
       attribute of a MediaStream, as defined in its WebIDL specification.</t>
 
@@ -212,27 +209,29 @@
       far, no semantic for such a mixture have been defined, but this
       specification does not forbid the practice.</t>
 
-      <t>When an SDP description is updated, a specific "msid-id" continues to
-      refer to the same MediaStream, and a specific "msid-appdata" to the same
-      MediaStreamTrack. There is no memory apart from the currently valid SDP
-      descriptions; if an msid "identifier" value disappears from the SDP and
-      appears in a later negotiation, it will be taken to refer to a new
-      MediaStream.</t>
+      <t>When an SDP session description is updated, a specific "msid-id"
+      continues to refer to the same MediaStream, and a specific
+      "msid-appdata" to the same MediaStreamTrack. There is no memory apart
+      from the currently valid SDP descriptions; if an msid "identifier" value
+      disappears from the SDP and appears in a later negotiation, it will be
+      taken to refer to a new MediaStream.</t>
 
-      <t>The following are the rules for handling updates of the list of media
-      descriptions and their msid values.</t>
+      <t>The following is a high level description of the rules for handling
+      SDP updates. Detailed procedures are in <xref
+      target="s-detailed-procedures"/>.</t>
 
       <t><list style="symbols">
-          <t>When a new msid "identifier" value occurs in the description, the
-          recipient can signal to its application that a new MediaStream has
-          been added.</t>
+          <t>When a new msid "identifier" value occurs in a session
+          description, the recipient can signal to its application that a new
+          MediaStream has been added.</t>
 
-          <t>When a description is updated to have more media descriptions
-          with the same msid "identifier" value, but different "appdata"
-          values, the recipient can signal to its application that new
-          MediaStreamTracks have been added to the MediaStream.</t>
+          <t>When a session description is updated to have media descriptions
+          with an msid "identifier" value, with one or more different
+          "appdata" values, the recipient can signal to its application that
+          new MediaStreamTracks have been added to the MediaStream. This is
+          done for each different msid "identifier" value.</t>
 
-          <t>When a description is updated to no longer list any msid
+          <t>When a session description is updated to no longer list any msid
           attribute on a specific media description, the recipient can signal
           to its application that the corresponding MediaStreamTrack has
           ended.</t>
@@ -306,7 +305,8 @@
         or by disabling the media description by setting its port to zero.</t>
       </section>
 
-      <section title="Detailed Offer/Answer Procedures">
+      <section anchor="s-detailed-procedures"
+               title="Detailed Offer/Answer Procedures">
         <t>These procedures are given in terms of RFC 3264-recommended
         sections. They describe the actions to be taken in terms of
         MediaStreams and MediaStreamTracks; they do not include event
@@ -324,9 +324,8 @@
 
         <section title="Answerer processing of the Offer">
           <t>For each media description in the offer, and for each "a=msid"
-          attribute in the media description where the "msid-id" is associated
-          with the "WMS" semantic, the receiver of the offer will perform the
-          following steps:</t>
+          attribute in the media description, the receiver of the offer will
+          perform the following steps:</t>
 
           <t><list style="symbols">
               <t>Extract the "appdata" field of the "a=msid" attribute</t>
