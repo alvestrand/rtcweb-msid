@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-ietf-mmusic-msid-09" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-mmusic-msid-10" ipr="trust200902">
   <front>
     <title abbrev="MSID in SDP">WebRTC MediaStream Identification in the
     Session Description Protocol</title>
@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="21" month="April" year="2015"/>
+    <date day="28" month="April" year="2015"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
