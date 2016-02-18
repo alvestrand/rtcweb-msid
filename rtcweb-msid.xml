@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="1" month="October" year="2015"/>
+    <date day="18" month="February" year="2016"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -168,7 +168,7 @@
       and application data "examplebar" might look like this:</t>
 
       <figure>
-        <artwork><![CDATA[ 
+        <artwork><![CDATA[
   msid:examplefoo examplebar
 
 ]]></artwork>
@@ -438,7 +438,11 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
             <t>Appropriate values: The details of appropriate values are given
             in RFC XXXX.</t>
-          </list></t>
+
+            <t>MUX category: NORMAL</t>
+          </list>The MUX category is defined in <xref
+        target="I-D.ietf-mmusic-sdp-mux-attributes"/> with registration
+        procedures in <xref target="I-D.ietf-mmusic-rfc4566bis"/>.</t>
       </section>
     </section>
 
@@ -481,6 +485,10 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       <?rfc include='reference.W3C.WD-webrtc-20150210'?>
 
       <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
+
+      <?rfc include='reference.I-D.ietf-mmusic-sdp-mux-attributes'?>
+
+      <?rfc include='reference.I-D.ietf-mmusic-rfc4566bis'?>
     </references>
 
     <references title="Informative References">
@@ -677,9 +685,7 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       </section>
 
       <section title="Changes from -09 to -10">
-        <t>Language clarifications.</t>
-
-        <t>Removed more leftover traces of wms-semantic.</t>
+        <t>Addressed review comments from Paul Kyzivat.</t>
       </section>
 
       <section title="Changes from -10 to -11">
@@ -691,6 +697,9 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
         <t>Disallowed the option of sending multiple media sections with the
         same msid (id and appdata identical).</t>
+      </section>
+      <section title="Changes from -11 to -12">
+        <t>Added mux-category to the IANA considerations section.</t>
       </section>
     </section>
   </back>
