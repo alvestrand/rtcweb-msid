@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="18" month="February" year="2016"/>
+    <date day="18" month="March" year="2016"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -193,6 +193,12 @@
 
       <t>Endpoints can update the associations between RTP media streams as
       expressed by msid attributes at any time.</t>
+
+      <t>The msid attributes depend on the association of RTP media streams
+      with media descriptions, but does not depend on the association of RTP
+      media streams with RTP transports; therefore, its mux category is NORMAL
+      - the process of deciding on MSID attributes doesn't have to take into
+      consideration whether the media streams are bundled or not.</t>
     </section>
 
     <section anchor="sect-media-stream" title="Procedures">
