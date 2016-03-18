@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-ietf-mmusic-msid-10" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-mmusic-msid-11" ipr="trust200902">
   <front>
     <title abbrev="MSID in SDP">WebRTC MediaStream Identification in the
     Session Description Protocol</title>
@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="28" month="April" year="2015"/>
+    <date day="1" month="October" year="2015"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -115,6 +115,9 @@
         support functionality like forward error correction or simulcast. This
         complication is ignored below.</t>
 
+        <t>MediaStreamTracks are unidirectional; they carry media on one
+        direction only.</t>
+
         <t>In the RTP specification, media streams are identified using the
         SSRC field. Streams are grouped into RTP Sessions, and also carry a
         CNAME. Neither CNAME nor RTP session correspond to a MediaStream.
@@ -123,12 +126,12 @@
 
         <t>WebRTC defines a mapping (documented in <xref
         target="I-D.ietf-rtcweb-jsep"/>) where one SDP media description is
-        used to describe each MediaStreamTrack, and that the BUNDLE mechanism
-        <xref target="I-D.ietf-mmusic-sdp-bundle-negotiation"/> is used to
-        group MediaStreamTracks into RTP sessions. Therefore, the need is to
-        specify the ID of a MediaStreamTrack and its associated MediaStream
-        for each media description, which can be accomplished with a
-        media-level SDP attribute.</t>
+        used to describe each MediaStreamTrack, and the BUNDLE mechanism <xref
+        target="I-D.ietf-mmusic-sdp-bundle-negotiation"/> is used to group
+        MediaStreamTracks into RTP sessions. Therefore, the need is to specify
+        the ID of a MediaStreamTrack and its associated MediaStream for each
+        media description, which can be accomplished with a media-level SDP
+        attribute.</t>
 
         <t>This usage is described in <xref target="sect-media-stream"/>.</t>
       </section>
@@ -137,12 +140,13 @@
     <section anchor="sect-definition" title="The Msid Mechanism">
       <t>This document defines a new SDP <xref target="RFC4566"/> media-level
       "msid" attribute. This new attribute allows endpoints to associate RTP
-      media streams that are described in different media descriptions. The
-      attribute also allows application-specific information to the
-      association.</t>
+      media streams that are described in different media descriptions with
+      the same MediaStreams as defined in <xref
+      target="W3C.WD-webrtc-20150210"/>., and to carry an identifier for each
+      MediaStreamTrack in its "appdata" field.</t>
 
-      <t>The value of the "msid" attribute consists of an identifier and
-      optional application-specific data.</t>
+      <t>The value of the "msid" attribute consists of an identifier and an
+      optional "appdata" field.</t>
 
       <t>The name of the attribute is "msid".</t>
 
@@ -173,25 +177,28 @@
       <t>The identifier is a string of ASCII characters that are legal in a
       "token", consisting of between 1 and 64 characters.</t>
 
-      <t>Application data is carried on the same line as the identifier,
-      separated from the identifier by a space.</t>
+      <t>Application data (msid-appdata) is carried on the same line as the
+      identifier, separated from the identifier by a space.</t>
 
-      <t>The identifier uniquely identifies a group within the scope of an SDP
-      description.</t>
+      <t>The identifier (msid-id) uniquely identifies a group within the scope
+      of an SDP description.</t>
 
       <t>There may be multiple msid attributes in a single media description.
-      There may also be multiple media descriptions that have the same value
-      for identifier and application data.</t>
+      This represents the case where a single MediaStreamTrack is present in
+      multiple MediaStreams; the value of "msid-appdata" MUST be identical for
+      all occurences.</t>
+
+      <t>Multiple media descriptions with the same value for msid-id and
+      msid-appdata is not permitted.</t>
 
       <t>Endpoints can update the associations between RTP media streams as
-      expressed by msid attributes at any time; the semantics and restrictions
-      of such grouping and ungrouping are application dependent.</t>
+      expressed by msid attributes at any time.</t>
     </section>
 
     <section anchor="sect-media-stream" title="Procedures">
-      <t>This section describes how to use the msid-semantic attribute for
-      associating media descriptions representing MediaStreamTracks within
-      MediaStreams as defined in <xref target="W3C.WD-webrtc-20150210"/>.</t>
+      <t>This section describes the procedures for associating media
+      descriptions representing MediaStreamTracks within MediaStreams as
+      defined in <xref target="W3C.WD-webrtc-20150210"/>.</t>
 
       <t>In the Javascript API, each MediaStream and MediaStreamTrack has an
       "id" attribute, which is a DOMString.</t>
@@ -202,12 +209,6 @@
       <t>The value of the "msid-appdata" field in the msid consists of the
       "id" attribute of a MediaStreamTrack, as defined in its WebIDL
       specification.</t>
-
-      <t>If two different media descriptions have MSID attributes with the
-      same values for "msid-id" and "msid-appdata", it means that these two
-      media descriptions are both intended for the same MediaStreamTrack. So
-      far, no semantic for such a mixture have been defined, but this
-      specification does not forbid the practice.</t>
 
       <t>When an SDP session description is updated, a specific "msid-id"
       continues to refer to the same MediaStream, and a specific
@@ -242,9 +243,7 @@
       (timeout), and when the corresponding media description is disabled by
       setting the port number to zero. Changing the direction of the media
       description (by setting "sendonly", "recvonly" or "inactive" attributes)
-      will not close the MediaStreamTrack. (This mechanism may be used to
-      signal that a particular MediaStreamTrack should be put on temporary
-      hold, but that usage is not specified in this memo.)</t>
+      will not close the MediaStreamTrack.</t>
 
       <t>The association between SSRCs and media descriptions is specified in
       <xref target="I-D.ietf-rtcweb-jsep"/>.</t>
@@ -271,7 +270,8 @@
         <t><list style="symbols">
             <t>When RTP packets are initially received, it will create an
             appropriate MediaStreamTrack based on the type of the media
-            (carried in PayloadType), and use the mid RTP attribute (if
+            (carried in PayloadType), and use the MID RTP header extension
+            <xref target="I-D.ietf-mmusic-sdp-bundle-negotiation"/> (if
             present) to associate the RTP packets with a specific media
             section. If the connection is not in the RTCSignalingState
             "stable", it will wait at this point.</t>
@@ -462,8 +462,9 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       Cullen Jennings.</t>
 
       <t>Special thanks to Flemming Andreassen, Miguel Garcia, Martin Thomson,
-      Ted Hardie, Adam Roach and Paul Kyzivat for their work in reviewing this
-      draft, with many specific language suggestions.</t>
+      Ted Hardie, Adam Roach, Magnus Westerlund and Paul Kyzivat for their
+      work in reviewing this draft, with many specific language
+      suggestions.</t>
     </section>
   </middle>
 
@@ -673,6 +674,23 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
         <t>Tried to make sure this document does not describe the API to the
         application.</t>
+      </section>
+
+      <section title="Changes from -09 to -10">
+        <t>Language clarifications.</t>
+
+        <t>Removed more leftover traces of wms-semantic.</t>
+      </section>
+
+      <section title="Changes from -10 to -11">
+        <t>Defined the semantics of multiple MSIDs in a media section to be a
+        MediaStreamTrack present in multiple MediaStreams.</t>
+
+        <t>Made an explicit note that MediaStreamTracks are
+        unidirectional.</t>
+
+        <t>Disallowed the option of sending multiple media sections with the
+        same msid (id and appdata identical).</t>
       </section>
     </section>
   </back>
