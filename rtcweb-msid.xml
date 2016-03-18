@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-ietf-mmusic-msid-11" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-mmusic-msid-12" ipr="trust200902">
   <front>
     <title abbrev="MSID in SDP">WebRTC MediaStream Identification in the
     Session Description Protocol</title>
@@ -704,6 +704,7 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
         <t>Disallowed the option of sending multiple media sections with the
         same msid (id and appdata identical).</t>
       </section>
+
       <section title="Changes from -11 to -12">
         <t>Added mux-category to the IANA considerations section.</t>
       </section>
