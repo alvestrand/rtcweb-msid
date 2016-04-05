@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-ietf-mmusic-msid-12" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-mmusic-msid-13" ipr="trust200902">
   <front>
     <title abbrev="MSID in SDP">WebRTC MediaStream Identification in the
     Session Description Protocol</title>
@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="18" month="March" year="2016"/>
+    <date day="5" month="April" year="2016"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -447,8 +447,7 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
             <t>MUX category: NORMAL</t>
           </list>The MUX category is defined in <xref
-        target="I-D.ietf-mmusic-sdp-mux-attributes"/> with registration
-        procedures in <xref target="I-D.ietf-mmusic-rfc4566bis"/>.</t>
+        target="I-D.ietf-mmusic-sdp-mux-attributes"/>.</t>
       </section>
     </section>
 
@@ -493,8 +492,6 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
 
       <?rfc include='reference.I-D.ietf-mmusic-sdp-mux-attributes'?>
-
-      <?rfc include='reference.I-D.ietf-mmusic-rfc4566bis'?>
     </references>
 
     <references title="Informative References">
@@ -707,6 +704,11 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
       <section title="Changes from -11 to -12">
         <t>Added mux-category to the IANA considerations section.</t>
+      </section>
+
+      <section title="Changes from -12 to -13">
+        <t>Modified registration description to delete dependency on
+        -4566-bis</t>
       </section>
     </section>
   </back>
