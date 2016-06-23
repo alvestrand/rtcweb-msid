@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-ietf-mmusic-msid-13" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-mmusic-msid-14" ipr="trust200902">
   <front>
     <title abbrev="MSID in SDP">WebRTC MediaStream Identification in the
     Session Description Protocol</title>
@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="5" month="April" year="2016"/>
+    <date day="23" month="June" year="2016"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -62,13 +62,40 @@
     <section title="Introduction">
       <t/>
 
+      <section title="Terminology">
+        <t>This document uses terminology from <xref
+        target="I-D.ietf-rtcweb-overview"/>. In addition, the following terms
+        are used as described below:</t>
+
+        <t><list style="hanging">
+            <t hangText="RTP stream">Defined in <xref target="RFC7656"/> as a
+            stream of RTP packets containing media data.</t>
+
+            <t hangText="MediaStream">Defined in <xref
+            target="W3C.WD-webrtc-20150210"/> as an assembly of
+            MediaStreamTracks. One MediaStream can contain multiple
+            MediaStreamTracks, of the same or different types.</t>
+
+            <t hangText="MediaStreamTrack">Defined in <xref
+            target="W3C.WD-webrtc-20150210"/> as an unidirectional flow of
+            media data (either audio or video, but not both). Corresponds to
+            the <xref target="RFC7656"/> term "Source Stream". One
+            MediaStreamTrack can be present in zero, one or multiple
+            MediaStreams.</t>
+
+            <t hangText="Media description">Defined in <xref
+            target="RFC4566"/> as a set of fields starting with an "m=" field
+            and terminated by eitehr the next "m=" field or by the end of the
+            session description.</t>
+          </list></t>
+      </section>
+
       <section title="Structure Of This Document">
         <t>This document adds a new Session Description Protocol (SDP) <xref
-        target="RFC4566"/> mechanism that can associate application layer
-        identifiers with the binding between media streams, attaching
-        identifiers to the media streams and attaching identifiers to the
-        groupings they form. It is designed for use with WebRTC<xref
-        target="I-D.ietf-rtcweb-overview"/> .</t>
+        target="RFC4566"/> mechanism that can attach identifiers to the RTP
+        streams and attaching identifiers to the groupings they form. It is
+        designed for use with WebRTC<xref target="I-D.ietf-rtcweb-overview"/>
+        .</t>
 
         <t><xref target="sect-why"/> gives the background on why a new
         mechanism is needed.</t>
@@ -84,15 +111,16 @@
 
       <section anchor="sect-why" title="Why A New Mechanism Is Needed">
         <t>When media is carried by RTP <xref target="RFC3550"/>, each RTP
-        media stream is distinguished inside an RTP session by its SSRC; each
-        RTP session is distinguished from all other RTP sessions by being on a
+        stream is distinguished inside an RTP session by its SSRC; each RTP
+        session is distinguished from all other RTP sessions by being on a
         different transport association (strictly speaking, 2 transport
         associations, one used for RTP and one used for RTCP, unless RTP/RTCP
         multiplexing <xref target="RFC5761"/> is used).</t>
 
-        <t>SDP gives a description based on media descriptions. According to
-        the model used in <xref target="I-D.ietf-rtcweb-jsep"/>, each media
-        description describes exactly one media source, and if mulitple media
+        <t>SDP <xref target="RFC4566"/> gives a format for describing an SDP
+        session that can contain multiple media descriptions. According to the
+        model used in <xref target="I-D.ietf-rtcweb-jsep"/>, each media
+        description describes exactly one media source, and if multiple media
         sources are carried in an RTP session, this is signalled using BUNDLE
         <xref target="I-D.ietf-mmusic-sdp-bundle-negotiation"/>; if BUNDLE is
         not used, each media source is carried in its own RTP session.</t>
@@ -109,20 +137,20 @@
         target="W3C.WD-webrtc-20150210"/> specifies that communication between
         WebRTC entities is done via MediaStreams, which contain
         MediaStreamTracks. A MediaStreamTrack is generally carried using a
-        single SSRC in an RTP session (forming an RTP media stream. The
-        collision of terminology is unfortunate.) There might possibly be
-        additional SSRCs, possibly within additional RTP sessions, in order to
-        support functionality like forward error correction or simulcast. This
-        complication is ignored below.</t>
+        single SSRC in an RTP session (forming an RTP stream. The collision of
+        terminology is unfortunate.) There might possibly be additional SSRCs,
+        possibly within additional RTP sessions, in order to support
+        functionality like forward error correction or simulcast. These
+        additional SSRCs are not affected by this specification.</t>
 
         <t>MediaStreamTracks are unidirectional; they carry media on one
         direction only.</t>
 
-        <t>In the RTP specification, media streams are identified using the
-        SSRC field. Streams are grouped into RTP Sessions, and also carry a
-        CNAME. Neither CNAME nor RTP session correspond to a MediaStream.
-        Therefore, the association of an RTP media stream to MediaStreams need
-        to be explicitly signaled.</t>
+        <t>In the RTP specification, RTP streams are identified using the SSRC
+        field. Streams are grouped into RTP Sessions, and also carry a CNAME.
+        Neither CNAME nor RTP session correspond to a MediaStream. Therefore,
+        the association of an RTP stream to MediaStreams need to be explicitly
+        signaled.</t>
 
         <t>WebRTC defines a mapping (documented in <xref
         target="I-D.ietf-rtcweb-jsep"/>) where one SDP media description is
@@ -140,10 +168,10 @@
     <section anchor="sect-definition" title="The Msid Mechanism">
       <t>This document defines a new SDP <xref target="RFC4566"/> media-level
       "msid" attribute. This new attribute allows endpoints to associate RTP
-      media streams that are described in different media descriptions with
-      the same MediaStreams as defined in <xref
-      target="W3C.WD-webrtc-20150210"/>., and to carry an identifier for each
-      MediaStreamTrack in its "appdata" field.</t>
+      streams that are described in different media descriptions with the same
+      MediaStreams as defined in <xref target="W3C.WD-webrtc-20150210"/>., and
+      to carry an identifier for each MediaStreamTrack in its "appdata"
+      field.</t>
 
       <t>The value of the "msid" attribute consists of an identifier and an
       optional "appdata" field.</t>
@@ -191,14 +219,15 @@
       <t>Multiple media descriptions with the same value for msid-id and
       msid-appdata is not permitted.</t>
 
-      <t>Endpoints can update the associations between RTP media streams as
+      <t>Endpoints can update the associations between RTP streams as
       expressed by msid attributes at any time.</t>
 
-      <t>The msid attributes depend on the association of RTP media streams
-      with media descriptions, but does not depend on the association of RTP
-      media streams with RTP transports; therefore, its mux category is NORMAL
-      - the process of deciding on MSID attributes doesn't have to take into
-      consideration whether the media streams are bundled or not.</t>
+      <t>The msid attributes depend on the association of RTP streams with
+      media descriptions, but does not depend on the association of RTP
+      streams with RTP transports; therefore, its mux category (as defined in
+      <xref target="I-D.ietf-mmusic-sdp-mux-attributes"/>) is NORMAL - the
+      process of deciding on MSID attributes doesn't have to take into
+      consideration whether the RTP streams are bundled or not.</t>
     </section>
 
     <section anchor="sect-media-stream" title="Procedures">
@@ -206,18 +235,20 @@
       descriptions representing MediaStreamTracks within MediaStreams as
       defined in <xref target="W3C.WD-webrtc-20150210"/>.</t>
 
-      <t>In the Javascript API, each MediaStream and MediaStreamTrack has an
-      "id" attribute, which is a DOMString.</t>
+      <t>In the Javascript API described in that specification, each
+      MediaStream and MediaStreamTrack has an "id" attribute, which is a
+      DOMString.</t>
 
       <t>The value of the "msid-id" field in the msid consists of the "id"
-      attribute of a MediaStream, as defined in its WebIDL specification.</t>
-
-      <t>The value of the "msid-appdata" field in the msid consists of the
-      "id" attribute of a MediaStreamTrack, as defined in its WebIDL
+      attribute of a MediaStream, as defined in the MediaStream's WebIDL
       specification.</t>
 
+      <t>The value of the "msid-appdata" field in the msid consists of the
+      "id" attribute of a MediaStreamTrack, as defined in the
+      MediaStreamTrack's WebIDL specification.</t>
+
       <t>When an SDP session description is updated, a specific "msid-id"
-      continues to refer to the same MediaStream, and a specific
+      value continues to refer to the same MediaStream, and a specific
       "msid-appdata" to the same MediaStreamTrack. There is no memory apart
       from the currently valid SDP descriptions; if an msid "identifier" value
       disappears from the SDP and appears in a later negotiation, it will be
@@ -233,10 +264,10 @@
           MediaStream has been added.</t>
 
           <t>When a session description is updated to have media descriptions
-          with an msid "identifier" value, with one or more different
-          "appdata" values, the recipient can signal to its application that
-          new MediaStreamTracks have been added to the MediaStream. This is
-          done for each different msid "identifier" value.</t>
+          with msid attributes where the "appdata" value hasn't been seen
+          before, the recipient can signal to its application that new
+          MediaStreamTracks have been added to the MediaStream. This is done
+          for each different msid "identifier" value.</t>
 
           <t>When a session description is updated to no longer list any msid
           attribute on a specific media description, the recipient can signal
@@ -304,8 +335,8 @@
         limit this buffering, it MUST signal to the user that media has been
         discarded.</t>
 
-        <t>It follows from the above that media stream tracks in the "default"
-        media stream cannot be closed by removing the msid attribute; the
+        <t>It follows from the above that MediaStreamTracks in the "default"
+        MediaStream cannot be closed by removing the msid attribute; the
         application must instead signal these as closed when the SSRC
         disappears according to the rules of RFC 3550 section 6.3.4 and 6.3.5
         or by disabling the media description by setting its port to zero.</t>
@@ -433,7 +464,7 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
             <t>Attribute name: msid</t>
 
-            <t>Long-form attribute name: Media stream group Identifier</t>
+            <t>Long-form attribute name: MediaStream group Identifier</t>
 
             <t>Subject to charset: The attribute value contains only ASCII
             characters, and is therefore not subject to the charset
@@ -453,7 +484,7 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
     <section anchor="Security" title="Security Considerations">
       <t>An adversary with the ability to modify SDP descriptions has the
-      ability to switch around tracks between media streams. This is a special
+      ability to switch around tracks between MediaStreams. This is a special
       case of the general security consideration that modification of SDP
       descriptions needs to be confined to entities trusted by the
       application.</t>
@@ -470,10 +501,10 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       <t>This note is based on sketches from, among others, Justin Uberti and
       Cullen Jennings.</t>
 
-      <t>Special thanks to Flemming Andreassen, Miguel Garcia, Martin Thomson,
-      Ted Hardie, Adam Roach, Magnus Westerlund and Paul Kyzivat for their
-      work in reviewing this draft, with many specific language
-      suggestions.</t>
+      <t>Special thanks to Flemming Andreassen, Ben Campbell, Miguel Garcia,
+      Martin Thomson, Ted Hardie, Adam Roach, Magnus Westerlund and Paul
+      Kyzivat for their work in reviewing this draft, with many specific
+      language suggestions.</t>
     </section>
   </middle>
 
@@ -499,6 +530,8 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
       <?rfc include='reference.RFC.5888'?>
 
+      <?rfc include='reference.RFC.7656'?>
+
       <?rfc include='reference.I-D.ietf-mmusic-sdp-bundle-negotiation'?>
 
       <?rfc include='reference.I-D.ietf-rtcweb-overview'?>
@@ -515,8 +548,8 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
       <t>Another suggestion has been to put the msid value within an attribute
       of RTCP SR (sender report) packets. This doesn't offer the ability to
-      know that you have seen all the tracks currently configured for a media
-      stream.</t>
+      know that you have seen all the tracks currently configured for a
+      MediaStream.</t>
 
       <t>A suggestion that survived for a number of drafts was to define
       "msid" as a generic mechanism, where the particular semantics of this
@@ -709,6 +742,13 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       <section title="Changes from -12 to -13">
         <t>Modified registration description to delete dependency on
         -4566-bis</t>
+      </section>
+
+      <section title="Changes from -13 to -14">
+        <t>Added the terminology section. Switched from "(RTP) media stream"
+        to "RTP stream" per RFC 7656.</t>
+
+        <t>Various small changes based on review feedback.</t>
       </section>
     </section>
   </back>
