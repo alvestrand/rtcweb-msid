@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="23" month="June" year="2016"/>
+    <date day="24" month="June" year="2016"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -72,16 +72,16 @@
             stream of RTP packets containing media data.</t>
 
             <t hangText="MediaStream">Defined in <xref
-            target="W3C.WD-webrtc-20160531"/> as an assembly of
+            target="W3C.WD-mediacapture-streams-20150414"/>as an assembly of
             MediaStreamTracks. One MediaStream can contain multiple
             MediaStreamTracks, of the same or different types.</t>
 
             <t hangText="MediaStreamTrack">Defined in <xref
-            target="W3C.WD-webrtc-20160531"/> as an unidirectional flow of
-            media data (either audio or video, but not both). Corresponds to
-            the <xref target="RFC7656"/> term "Source Stream". One
-            MediaStreamTrack can be present in zero, one or multiple
-            MediaStreams.</t>
+            target="W3C.WD-mediacapture-streams-20150414"/>as an
+            unidirectional flow of media data (either audio or video, but not
+            both). Corresponds to the <xref target="RFC7656"/> term "Source
+            Stream". One MediaStreamTrack can be present in zero, one or
+            multiple MediaStreams.</t>
 
             <t hangText="Media description">Defined in <xref
             target="RFC4566"/> as a set of fields starting with an "m=" field
@@ -492,6 +492,11 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       target="s-nonsignal"/>, the amount of buffering should be limited to
       avoid memory exhaustion attacks.</t>
 
+      <t>Careless generation of identifiers can leak privacy-sensitive
+      information. <xref target="W3C.WD-mediacapture-streams-20150414"/>
+      recommends that identifiers are generated using UUID class 3 or 4 as a
+      basis, which avoids such leakage.</t>
+
       <t>No other attacks have been identified that depend on this
       mechanism.</t>
     </section>
@@ -534,6 +539,8 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       <?rfc include='reference.I-D.ietf-mmusic-sdp-bundle-negotiation'?>
 
       <?rfc include='reference.I-D.ietf-rtcweb-overview'?>
+
+      <?rfc include='reference.W3C.WD-mediacapture-streams-20150414'?>
     </references>
 
     <section title="Design considerations, rejected alternatives">
@@ -749,6 +756,12 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       <section title="Changes from -13 to -14">
         <t>Added the terminology section. Switched from "(RTP) media stream"
         to "RTP stream" per RFC 7656.</t>
+
+        <t>Added a mention of random ID generation to the security
+        considerations section.</t>
+
+        <t>Moved definition pointers for MediaStream and MediaStreamTrack to
+        the "mediacapture-streams" document.</t>
 
         <t>Various small changes based on review feedback.</t>
       </section>
