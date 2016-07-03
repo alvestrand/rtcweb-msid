@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="24" month="June" year="2016"/>
+    <date day="3" month="July" year="2016"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -72,12 +72,12 @@
             stream of RTP packets containing media data.</t>
 
             <t hangText="MediaStream">Defined in <xref
-            target="W3C.WD-mediacapture-streams-20150414"/>as an assembly of
+            target="W3C.CR-mediacapture-streams-20160519"/>as an assembly of
             MediaStreamTracks. One MediaStream can contain multiple
             MediaStreamTracks, of the same or different types.</t>
 
             <t hangText="MediaStreamTrack">Defined in <xref
-            target="W3C.WD-mediacapture-streams-20150414"/>as an
+            target="W3C.CR-mediacapture-streams-20160519"/>as an
             unidirectional flow of media data (either audio or video, but not
             both). Corresponds to the <xref target="RFC7656"/> term "Source
             Stream". One MediaStreamTrack can be present in zero, one or
@@ -493,7 +493,7 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       avoid memory exhaustion attacks.</t>
 
       <t>Careless generation of identifiers can leak privacy-sensitive
-      information. <xref target="W3C.WD-mediacapture-streams-20150414"/>
+      information. <xref target="W3C.CR-mediacapture-streams-20160519"/>
       recommends that identifiers are generated using UUID class 3 or 4 as a
       basis, which avoids such leakage.</t>
 
@@ -524,6 +524,8 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
       <?rfc include='reference.W3C.WD-webrtc-20160531'?>
 
+      <?rfc include='reference.W3C.CR-mediacapture-streams-20160519'?>
+
       <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
 
       <?rfc include='reference.I-D.ietf-mmusic-sdp-mux-attributes'?>
@@ -539,8 +541,6 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       <?rfc include='reference.I-D.ietf-mmusic-sdp-bundle-negotiation'?>
 
       <?rfc include='reference.I-D.ietf-rtcweb-overview'?>
-
-      <?rfc include='reference.W3C.WD-mediacapture-streams-20150414'?>
     </references>
 
     <section title="Design considerations, rejected alternatives">
