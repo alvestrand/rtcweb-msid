@@ -106,7 +106,7 @@
         <t><xref target="sect-media-stream"/> gives the necessary semantic
         information and procedures for using the msid attribute to signal the
         association of MediaStreamTracks to MediaStreams in support of the
-        WebRTC API <xref target="W3C.WD-webrtc-20150210"/>.</t>
+        WebRTC API <xref target="W3C.WD-webrtc-20160531"/>.</t>
       </section>
 
       <section anchor="sect-why" title="Why A New Mechanism Is Needed">
@@ -134,7 +134,7 @@
 
       <section title="The WEBRTC MediaStream">
         <t>The W3C WebRTC API specification <xref
-        target="W3C.WD-webrtc-20150210"/> specifies that communication between
+        target="W3C.WD-webrtc-20160531"/> specifies that communication between
         WebRTC entities is done via MediaStreams, which contain
         MediaStreamTracks. A MediaStreamTrack is generally carried using a
         single SSRC in an RTP session (forming an RTP stream. The collision of
@@ -169,7 +169,7 @@
       <t>This document defines a new SDP <xref target="RFC4566"/> media-level
       "msid" attribute. This new attribute allows endpoints to associate RTP
       streams that are described in different media descriptions with the same
-      MediaStreams as defined in <xref target="W3C.WD-webrtc-20150210"/>., and
+      MediaStreams as defined in <xref target="W3C.WD-webrtc-20150210"/>, and
       to carry an identifier for each MediaStreamTrack in its "appdata"
       field.</t>
 
@@ -233,7 +233,7 @@
     <section anchor="sect-media-stream" title="Procedures">
       <t>This section describes the procedures for associating media
       descriptions representing MediaStreamTracks within MediaStreams as
-      defined in <xref target="W3C.WD-webrtc-20150210"/>.</t>
+      defined in <xref target="W3C.WD-webrtc-20160531"/>.</t>
 
       <t>In the Javascript API described in that specification, each
       MediaStream and MediaStreamTrack has an "id" attribute, which is a
@@ -264,10 +264,10 @@
           MediaStream has been added.</t>
 
           <t>When a session description is updated to have media descriptions
-          with msid attributes where the "appdata" value hasn't been seen
-          before, the recipient can signal to its application that new
-          MediaStreamTracks have been added to the MediaStream. This is done
-          for each different msid "identifier" value.</t>
+          with an msid "identifier" value, with one or more different
+          "appdata" values, the recipient can siggnal to its application that
+          new MediaStreamTracks have been added to the MediaStream. This is
+          done for each different msid "identifier" value.</t>
 
           <t>When a session description is updated to no longer list any msid
           attribute on a specific media description, the recipient can signal
@@ -293,13 +293,12 @@
         <t>Note that this handling is triggered by incoming RTP packets, not
         by SDP negotiation.</t>
 
-        <t>When MSID is used, the only time this can happen is when, at a time
-        subsequent to the initial negotiation, a negotiation is performed
-        where the answerer adds a MediaStreamTrack to an already established
-        connection and starts sending data before the answer is received by
-        the offerer. For initial negotiation, packets won't flow until the ICE
-        candidates and fingerprints have been exchanged, so this is not an
-        issue.</t>
+        <t>When MSID is used, the only time this can happen is when, after the
+        initial negotiation, a negotiation is performed where the answerer
+        adds a MediaStreamTrack to an already established connection and
+        starts sending data before the answer is received by the offerer. For
+        initial negotiation, packets won't flow until the ICE candidates and
+        fingerprints have been exchanged, so this is not an issue.</t>
 
         <t>The recipient of those packets will perform the following
         steps:</t>
@@ -331,7 +330,7 @@
           </list></t>
 
         <t>The process above may involve a considerable amount of buffering
-        before the stable state is entered, If the implementation wishes to
+        before the stable state is entered. If the implementation wishes to
         limit this buffering, it MUST signal to the user that media has been
         discarded.</t>
 
@@ -518,7 +517,7 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
       <?rfc include='reference.RFC.5234'?>
 
-      <?rfc include='reference.W3C.WD-webrtc-20150210'?>
+      <?rfc include='reference.W3C.WD-webrtc-20160531'?>
 
       <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
 
@@ -744,6 +743,9 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
         -4566-bis</t>
       </section>
 
+      <section title="Changes from -13 to -14">
+        <t>Addressed nits found in Gen-ART review</t>
+      </section>
       <section title="Changes from -13 to -14">
         <t>Added the terminology section. Switched from "(RTP) media stream"
         to "RTP stream" per RFC 7656.</t>
