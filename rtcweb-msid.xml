@@ -72,12 +72,12 @@
             stream of RTP packets containing media data.</t>
 
             <t hangText="MediaStream">Defined in <xref
-            target="W3C.WD-webrtc-20150210"/> as an assembly of
+            target="W3C.WD-webrtc-20160531"/> as an assembly of
             MediaStreamTracks. One MediaStream can contain multiple
             MediaStreamTracks, of the same or different types.</t>
 
             <t hangText="MediaStreamTrack">Defined in <xref
-            target="W3C.WD-webrtc-20150210"/> as an unidirectional flow of
+            target="W3C.WD-webrtc-20160531"/> as an unidirectional flow of
             media data (either audio or video, but not both). Corresponds to
             the <xref target="RFC7656"/> term "Source Stream". One
             MediaStreamTrack can be present in zero, one or multiple
@@ -169,7 +169,7 @@
       <t>This document defines a new SDP <xref target="RFC4566"/> media-level
       "msid" attribute. This new attribute allows endpoints to associate RTP
       streams that are described in different media descriptions with the same
-      MediaStreams as defined in <xref target="W3C.WD-webrtc-20150210"/>, and
+      MediaStreams as defined in <xref target="W3C.WD-webrtc-20160531"/>, and
       to carry an identifier for each MediaStreamTrack in its "appdata"
       field.</t>
 
