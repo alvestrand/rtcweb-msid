@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="4" month="July" year="2016"/>
+    <date day="7" month="July" year="2016"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -254,6 +254,9 @@
       disappears from the SDP and appears in a later negotiation, it will be
       taken to refer to a new MediaStream.</t>
 
+      <t>If the MSID attribute does not conform to the ABNF given here, it
+      SHOULD be ignored.</t>
+
       <t>The following is a high level description of the rules for handling
       SDP updates. Detailed procedures are in <xref
       target="s-detailed-procedures"/>.</t>
@@ -309,13 +312,18 @@
             (carried in PayloadType), and use the MID RTP header extension
             <xref target="I-D.ietf-mmusic-sdp-bundle-negotiation"/> (if
             present) to associate the RTP packets with a specific media
-            section. If the connection is not in the RTCSignalingState
-            "stable", it will wait at this point.</t>
+            section.</t>
+
+            <t>If the connection is not in the RTCSignalingState "stable", it
+            will wait at this point.</t>
 
             <t>When the connection is in the RTCSignalingState "stable", it
-            will look at the relevant media section to find the msid
-            attribute.</t>
+            will assign ID values.</t>
+          </list></t>
 
+        <t>The following steps are performed to assign ID values:</t>
+
+        <t><list style="symbols">
             <t>If there is an msid attribute, it will use that attribute to
             populate the "id" field of the MediaStreamTrack and associated
             MediaStreams, as described above.</t>
@@ -506,9 +514,9 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
       Cullen Jennings.</t>
 
       <t>Special thanks to Flemming Andreassen, Ben Campbell, Miguel Garcia,
-      Martin Thomson, Ted Hardie, Adam Roach, Magnus Westerlund, Alissa Cooper
-      and Paul Kyzivat for their work in reviewing this draft, with many
-      specific language suggestions.</t>
+      Martin Thomson, Ted Hardie, Adam Roach, Magnus Westerlund, Alissa
+      Cooper, Sue Hares and Paul Kyzivat for their work in reviewing this
+      draft, with many specific language suggestions.</t>
     </section>
   </middle>
 
@@ -764,7 +772,11 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
         <t>Moved definition pointers for MediaStream and MediaStreamTrack to
         the "mediacapture-streams" document.</t>
 
-        <t>Various small changes based on review feedback.</t>
+        <t>Added note that syntactically invalid MSID fields SHOULD be
+        ignored.</t>
+
+        <t>Various small changes based on review feedback during IESG
+        processing.</t>
       </section>
     </section>
   </back>
