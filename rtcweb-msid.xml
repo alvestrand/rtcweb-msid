@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="23" month="January" year="2017"/>
+    <date day="7" month="February" year="2017"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -263,24 +263,24 @@
 
       <t><list style="symbols">
           <t>When a new msid "identifier" value occurs in a session
-          description, and it is not "-", the recipient can signal to
-          its application that a new MediaStream has been added.</t>
+          description, and it is not "-", the recipient can signal to its
+          application that a new MediaStream has been added.</t>
 
           <t>When a session description is updated to have media descriptions
           with an msid "identifier" value, with one or more different
           "appdata" values, the recipient can signal to its application that
           new MediaStreamTracks have been added, and which MediaStream it has
-          been added to. This is
-          done for each different msid "identifier" value, including the
-          special value "-", which indicates that a MediaStreamTrack has been
-          added with no corresponding MediaStream.</t>
+          been added to. This is done for each different msid "identifier"
+          value, including the special value "-", which indicates that a
+          MediaStreamTrack has been added with no corresponding
+          MediaStream.</t>
 
           <t>When a session description is updated to no longer list any msid
           attribute on a specific media description, the recipient can signal
           to its application that the corresponding MediaStreamTrack has
           ended.</t>
-        </list>
-      </t>
+        </list></t>
+
       <t>In addition to signaling that the track is ended when its msid
       attribute disappears from the SDP, the track will also be signaled as
       being ended when all associated SSRCs have disappeared by the rules of
@@ -783,10 +783,12 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
         <t>Various small changes based on review feedback during IESG
         processing.</t>
       </section>
+
       <section title="Changes from -15 to -16">
         <t>Added the special "-" value that means "no MediaStream".</t>
-        <t>Changed instances of a MediaStreamTrack being "closed" to
-        saying it's "ended", in accordance with WebRTC terminology.</t>
+
+        <t>Changed instances of a MediaStreamTrack being "closed" to saying
+        it's "ended", in accordance with WebRTC terminology.</t>
       </section>
     </section>
   </back>
