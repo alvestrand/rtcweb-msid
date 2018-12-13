@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-ietf-mmusic-msid-16" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-mmusic-msid-17" ipr="trust200902">
   <front>
     <title abbrev="MSID in SDP">WebRTC MediaStream Identification in the
     Session Description Protocol</title>
@@ -35,7 +35,7 @@
       </address>
     </author>
 
-    <date day="7" month="February" year="2017"/>
+    <date day="6" month="December" year="2018"/>
 
     <abstract>
       <t>This document specifies a Session Description Protocol (SDP) Grouping
@@ -243,7 +243,8 @@
       attribute of a MediaStream, as defined in the MediaStream's WebIDL
       specification. The special value "-" indicates "no MediaStream".</t>
 
-      <t>The value of the "msid-appdata" field in the msid consists of the
+      <t>The value of the "msid-appdata" field in the msid, if present,
+      consists of the
       "id" attribute of a MediaStreamTrack, as defined in the
       MediaStreamTrack's WebIDL specification.</t>
 
@@ -274,6 +275,13 @@
           value, including the special value "-", which indicates that a
           MediaStreamTrack has been added with no corresponding
           MediaStream.</t>
+
+	  <t>If an msid "identifier" value with no "appdata" value appears,
+	  it means that the sender did not inform the recipient of the desired
+	  identifier of the MediaStreamTrack, and the recipient will assign
+	  the "id" value of the created MediaStreamTrack on its own. All
+	  msid in a media section that do not have an "appdata" value are
+	  assumed to refer to the same MediaStreamTrack.</t>
 
           <t>When a session description is updated to no longer list any msid
           attribute on a specific media description, the recipient can signal
@@ -366,9 +374,10 @@
           associated outgoing MediaStreamTrack, the offerer adds one "a=msid"
           attribute to the section for each MediaStream with which the
           MediaStreamTrack is associated. The "identifier" field of the
-          attribute is set to the WebIDL "id" attribute of the MediaStream,
-          and the "appdata" field is set to the WebIDL "id" attribute of the
-          MediaStreamTrack.</t>
+          attribute is set to the WebIDL "id" attribute of the MediaStream.
+	  If the sender wishes to signal identifiers for the MediaStreamTracks,
+          the "appdata" field is set to the WebIDL "id" attribute of the
+          MediaStreamTrack; otherwise it is omitted.</t>
         </section>
 
         <section title="Answerer processing of the Offer">
@@ -377,11 +386,17 @@
           perform the following steps:</t>
 
           <t><list style="symbols">
-              <t>Extract the "appdata" field of the "a=msid" attribute</t>
+            <t>Extract the "appdata" field of the "a=msid" attribute,
+	    if present.</t>
 
-              <t>Check if a MediaStreamTrack with the same WebIDL "id"
-              attribute as the "appdata" field already exists, and is not in
-              the "ended" state. If it is not found, create it.</t>
+            <t>If the "appdata" field exists: Check if a MediaStreamTrack
+	    with the same WebIDL "id"
+            attribute as the "appdata" field already exists, and is not in
+            the "ended" state. If it is not found, create it.</t>
+
+	    <t>If the "appdata" field does not exist, and a MediaStreamTrack is
+	    not associated with this media section, create one and associate
+	    it with this media section for future use.</t>
 
               <t>Extract the "identifier" field of the "a=msid" attribte.</t>
 
@@ -789,6 +804,10 @@ a=msid:61317484-2ed4-49d7-9eb7-1414322a7aae
 
         <t>Changed instances of a MediaStreamTrack being "closed" to saying
         it's "ended", in accordance with WebRTC terminology.</t>
+      </section>
+      <section title="Changes from -16 to -17">
+	<t>Added text to allow omitting track identifiers, per JSEP PR #850
+	</t>
       </section>
     </section>
   </back>
